@@ -13,7 +13,6 @@
         <customObject id="-3" userLabel="Application"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
             <connections>
-                <outlet property="DomainServerStart" destination="u6x-hU-YuZ" id="5Fj-FX-2Kl"/>
                 <outlet property="audioMixerStartButton" destination="E89-0X-lxV" id="FTk-RG-gQ6"/>
                 <outlet property="audioMixerViewLogButton" destination="xon-xA-6XN" id="xeH-uO-EtC"/>
                 <outlet property="avatarMixerStartButton" destination="zGj-g3-hyO" id="MOD-mk-1jH"/>
@@ -160,6 +159,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="startDomainServer:" target="Voe-Tx-rLC" id="z99-LZ-E5y"/>
+                        </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cjf-Ld-rRJ">
                         <rect key="frame" x="256" y="398" width="276" height="23"/>
@@ -193,6 +195,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="displayLog:" target="Voe-Tx-rLC" id="XBg-ma-EvP"/>
+                        </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zDG-9f-C3U">
                         <rect key="frame" x="320" y="305" width="102" height="19"/>

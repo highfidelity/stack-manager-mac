@@ -14,6 +14,8 @@
 @synthesize typeName = _typeName;
 @synthesize instanceType = _instanceType;
 @synthesize instanceDomain = _instanceDomain;
+@synthesize stdoutLogOutput = _stdoutLogOutput;
+@synthesize stderrLogOutput = _stderrLogOutput;
 
 - (id)initWithType:(NSInteger)thisInstanceType
             domain:(NSString *)thisInstanceDomain
@@ -70,8 +72,44 @@
         
         instanceStdoutFilehandle = [instanceStdoutPipe fileHandleForReading];
         instanceStderrorFileHandle = [instanceStderrorPipe fileHandleForReading];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appendAndRotateStdoutLogs:)
+                                                     name:NSFileHandleDataAvailableNotification
+                                                   object:instanceStdoutFilehandle];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appendAndRotateStderrLogs:)
+                                                     name:NSFileHandleDataAvailableNotification
+                                                   object:instanceStderrorFileHandle];
+        
+        [instanceStdoutFilehandle waitForDataInBackgroundAndNotify];
+        [instanceStderrorFileHandle waitForDataInBackgroundAndNotify];
+        
     }
     return self;
+}
+
+- (void)appendAndRotateStdoutLogs:(NSNotification *)notification
+{
+    NSFileHandle *stdoutFileHandle = [notification object];
+    NSData *stdoutData = [stdoutFileHandle availableData];
+    NSString *stdoutString = [[NSString alloc] initWithData:stdoutData encoding:NSASCIIStringEncoding];
+    NSLog(@"%@", stdoutString);
+    if (self.instance.isRunning) {
+        [stdoutFileHandle waitForDataInBackgroundAndNotify];
+    }
+}
+
+- (void)appendAndRotateStderrLogs:(NSNotification *)notification
+{
+    NSFileHandle *stderrFileHandle = [notification object];
+    NSData *stderrData = [stderrFileHandle availableData];
+    NSString *stderrString = [[NSString alloc] initWithData:stderrData encoding:NSASCIIStringEncoding];
+    NSLog(@"%@", stderrString);
+    if (self.instance.isRunning) {
+        [stderrFileHandle waitForDataInBackgroundAndNotify];
+    }
 }
 
 @end

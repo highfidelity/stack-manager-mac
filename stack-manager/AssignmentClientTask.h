@@ -21,8 +21,13 @@
 @property NSInteger instanceType;
 @property NSString *typeName;
 @property NSString *instanceDomain;
+@property NSMutableArray *stdoutLogOutput;
+@property NSMutableArray *stderrLogOutput;
 
 - (id)initWithType:(NSInteger)thisInstanceType
             domain:(NSString *)thisInstanceDomain;
+
+- (void)appendAndRotateStdoutLogs:(NSNotification *)notification;
+- (void)appendAndRotateStderrLogs:(NSNotification *)notification;
 
 @end

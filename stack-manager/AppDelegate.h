@@ -34,6 +34,7 @@
 - (IBAction)toggleServer:(id)sender;
 - (IBAction)createServer:(id)sender;
 - (IBAction)destroyServer:(id)sender;
+- (IBAction)startDomainServer:(id)sender;
 - (IBAction)displayLog:(id)sender;
 - (IBAction)hideLog:(id)sender;
 - (BOOL)doWeHaveThisTypeAlready:(NSInteger)instanceType;
