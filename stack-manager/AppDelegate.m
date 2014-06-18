@@ -8,14 +8,13 @@
 
 #import "AppDelegate.h"
 #import "GlobalData.h"
-#import "AssignmentClientTask.h"
-#import "TestClass.h"
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     assignmentInstances = [[NSMutableArray alloc] init];
+    logViewWindow = [[LogViewer alloc] initWithWindowNibName:@"LogViewer"];
 }
 
 - (void)createExecutablePath
@@ -43,6 +42,15 @@
 - (void)downloadRequirements
 {
     
+}
+
+- (AssignmentClientTask *)findAssignment:(long)assignmentType
+{
+    NSPredicate *findByType = [NSPredicate predicateWithFormat:@"self.instanceType == %d", (NSInteger)assignmentType];
+    NSArray *typeMatches = [assignmentInstances filteredArrayUsingPredicate:findByType];
+    AssignmentClientTask *matchingTask = [typeMatches objectAtIndex:0];
+    typeMatches = nil;
+    return matchingTask;
 }
 
 - (IBAction)toggleServer:(id)sender
@@ -74,24 +82,28 @@
 - (IBAction)destroyServer:(id)sender
 {
     long buttonTag = ((NSButton *)sender).tag;
-    NSPredicate *findByType = [NSPredicate predicateWithFormat:@"self.instanceType == %d", (NSInteger)buttonTag];
-    NSArray *typeMatches = [assignmentInstances filteredArrayUsingPredicate:findByType];
-    AssignmentClientTask *matchingTask = [typeMatches objectAtIndex:0];
+    AssignmentClientTask *matchingTask = [self findAssignment:buttonTag];
     NSInteger indexOfInstance = [assignmentInstances indexOfObject:matchingTask];
     [[matchingTask instance] terminate];
-    typeMatches = nil;
     [assignmentInstances removeObjectAtIndex:indexOfInstance];
     [sender setTitle:@"Start"];
 }
 
-- (IBAction)displayLog:(id)sender
+- (IBAction)startDomainServer:(id)sender
 {
     
 }
 
-- (IBAction)hideLog:(id)sender
+- (IBAction)displayLog:(id)sender
 {
-    
+    long buttonTag = ((NSButton *)sender).tag;
+    AssignmentClientTask *matchingTask = [self findAssignment:buttonTag];
+    if (matchingTask) {
+        [logViewWindow loadStdoutDataIntoView:matchingTask];
+        [logViewWindow showWindow:self];
+    } else {
+        NSLog(@"The assignment for the requested log is not running");
+    }
 }
 
 - (BOOL)doWeHaveThisTypeAlready:(NSInteger)instanceType

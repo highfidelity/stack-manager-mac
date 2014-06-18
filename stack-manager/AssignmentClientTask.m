@@ -8,6 +8,7 @@
 
 #import "AssignmentClientTask.h"
 #import "GlobalData.h"
+#import "LogViewer.h"
 
 @implementation AssignmentClientTask
 @synthesize instance = _instance;
@@ -16,6 +17,17 @@
 @synthesize instanceDomain = _instanceDomain;
 @synthesize stdoutLogOutput = _stdoutLogOutput;
 @synthesize stderrLogOutput = _stderrLogOutput;
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSFileHandleDataAvailableNotification
+                                                  object:instanceStdoutFilehandle];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSFileHandleDataAvailableNotification
+                                                  object:instanceStderrorFileHandle];
+}
 
 - (id)initWithType:(NSInteger)thisInstanceType
             domain:(NSString *)thisInstanceDomain
@@ -86,16 +98,22 @@
         [instanceStdoutFilehandle waitForDataInBackgroundAndNotify];
         [instanceStderrorFileHandle waitForDataInBackgroundAndNotify];
         
+        _stdoutLogOutput = [[NSMutableArray alloc] init];
+        _stderrLogOutput = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
 - (void)appendAndRotateStdoutLogs:(NSNotification *)notification
 {
+    NSInteger maxScrollBack = 250;
     NSFileHandle *stdoutFileHandle = [notification object];
     NSData *stdoutData = [stdoutFileHandle availableData];
     NSString *stdoutString = [[NSString alloc] initWithData:stdoutData encoding:NSASCIIStringEncoding];
-    NSLog(@"%@", stdoutString);
+    [_stdoutLogOutput addObject:stdoutString];
+    if ([_stdoutLogOutput count] > maxScrollBack) {
+        [_stdoutLogOutput removeObjectAtIndex:0];
+    }
     if (self.instance.isRunning) {
         [stdoutFileHandle waitForDataInBackgroundAndNotify];
     }
@@ -103,10 +121,14 @@
 
 - (void)appendAndRotateStderrLogs:(NSNotification *)notification
 {
+    NSInteger maxScrollBack = 100;
     NSFileHandle *stderrFileHandle = [notification object];
     NSData *stderrData = [stderrFileHandle availableData];
     NSString *stderrString = [[NSString alloc] initWithData:stderrData encoding:NSASCIIStringEncoding];
-    NSLog(@"%@", stderrString);
+    [_stderrLogOutput addObject:stderrString];
+    if ([_stderrLogOutput count] > maxScrollBack) {
+        [_stderrLogOutput removeObjectAtIndex:0];
+    }
     if (self.instance.isRunning) {
         [stderrFileHandle waitForDataInBackgroundAndNotify];
     }

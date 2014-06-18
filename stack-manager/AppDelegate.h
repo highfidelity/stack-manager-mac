@@ -7,9 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "LogViewer.h"
+#import "AssignmentClientTask.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
     NSMutableArray *assignmentInstances;
+    LogViewer *logViewWindow;
 }
 
 @property (assign) IBOutlet NSWindow *window;
@@ -31,12 +34,12 @@
 - (void)createExecutablePath;
 - (void)downloadLatestExecutables;
 - (void)downloadRequirements;
+- (AssignmentClientTask *)findAssignment:(long)assignmentType;
 - (IBAction)toggleServer:(id)sender;
 - (IBAction)createServer:(id)sender;
 - (IBAction)destroyServer:(id)sender;
 - (IBAction)startDomainServer:(id)sender;
 - (IBAction)displayLog:(id)sender;
-- (IBAction)hideLog:(id)sender;
 - (BOOL)doWeHaveThisTypeAlready:(NSInteger)instanceType;
 - (IBAction)createAllServers:(id)sender;
 

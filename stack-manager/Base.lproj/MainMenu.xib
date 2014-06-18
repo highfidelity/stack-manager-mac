@@ -215,6 +215,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="displayLog:" target="Voe-Tx-rLC" id="TMJ-VY-Y75"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E89-0X-lxV">
                         <rect key="frame" x="521" y="262" width="70" height="32"/>
@@ -234,6 +237,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="displayLog:" target="Voe-Tx-rLC" id="Aob-sr-M2A"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="zGj-g3-hyO">
                         <rect key="frame" x="521" y="229" width="70" height="32"/>
@@ -253,6 +259,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="displayLog:" target="Voe-Tx-rLC" id="TjX-GA-lQv"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="PJl-2p-Df2">
                         <rect key="frame" x="521" y="198" width="70" height="32"/>
@@ -272,6 +281,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="displayLog:" target="Voe-Tx-rLC" id="hWN-L0-23H"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="6" translatesAutoresizingMaskIntoConstraints="NO" id="AHt-g5-AWm">
                         <rect key="frame" x="521" y="165" width="70" height="32"/>
@@ -291,6 +303,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="displayLog:" target="Voe-Tx-rLC" id="b87-Yi-xQR"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="swv-IN-29c">
                         <rect key="frame" x="521" y="132" width="70" height="32"/>
@@ -310,6 +325,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="displayLog:" target="Voe-Tx-rLC" id="Vkm-Yq-ng4"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="5" translatesAutoresizingMaskIntoConstraints="NO" id="0RG-GL-y9U">
                         <rect key="frame" x="521" y="100" width="70" height="32"/>
