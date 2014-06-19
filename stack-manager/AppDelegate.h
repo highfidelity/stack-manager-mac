@@ -18,7 +18,6 @@
 
 }
 
-@property LogViewer *logViewer;
 @property (assign) IBOutlet NSWindow *window;
 @property (weak) IBOutlet NSButton *domainServerStartButton;
 @property (weak) IBOutlet NSButton *domainServerViewLogButton;

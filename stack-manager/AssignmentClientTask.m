@@ -10,8 +10,7 @@
 #import "GlobalData.h"
 
 @implementation AssignmentClientTask
-@synthesize stdoutTextField = _stdoutTextField;
-@synthesize stderrTextField = _stderrTextField;
+@synthesize logView = _logView;
 @synthesize instance = _instance;
 @synthesize typeName = _typeName;
 @synthesize instanceType = _instanceType;
@@ -107,6 +106,46 @@
     return self;
 }
 
+- (void)displayLog
+{
+    _logView = [[LogViewer alloc] initWithWindowNibName:@"LogViewer"];
+    NSString *typeName = [[NSString alloc] init];
+    switch ((int)self.instanceType) {
+        case 0:
+            typeName = @"audio-mixer";
+            break;
+        case 1:
+            typeName = @"avatar-mixer";
+            break;
+        case 3:
+            typeName = @"voxel-server";
+            break;
+        case 4:
+            typeName = @"particle-server";
+            break;
+        case 5:
+            typeName = @"metavoxel-server";
+            break;
+        case 6:
+            typeName = @"model-server";
+            break;
+    }
+    [[_logView stdoutTextField] setString:@""];
+    [[_logView assignmentTypeLabel] setStringValue:typeName];
+    self.logsAreInView = YES;
+    [_logView showWindow:self];
+    for (NSString *stdoutLine in self.stdoutLogOutput) {
+        [[[_logView stdoutTextField] textStorage] appendAttributedString:[[NSAttributedString alloc]
+                                                                      initWithString:stdoutLine]];
+        [[_logView stdoutTextField] scrollRangeToVisible:NSMakeRange([[[_logView stdoutTextField] string] length], 0)];
+    }
+    for (NSString *stderrLine in self.stderrLogOutput) {
+        [[[_logView stderrTextField] textStorage] appendAttributedString:[[NSAttributedString alloc]
+                                                                      initWithString:stderrLine]];
+        [[_logView stderrTextField] scrollRangeToVisible:NSMakeRange([[[_logView stderrTextField] string] length], 0)];
+    }
+}
+
 - (void)appendAndRotateStdoutLogs:(NSNotification *)notification
 {
     NSInteger maxScrollBack = 250;
@@ -118,10 +157,9 @@
         [_stdoutLogOutput removeObjectAtIndex:0];
     }
     if (self.logsAreInView) {
-        NSLog(@"Logs are in view so we're updating it");
-        [[[self stdoutTextField] textStorage] appendAttributedString:[[NSAttributedString alloc]
+        [[[_logView stdoutTextField] textStorage] appendAttributedString:[[NSAttributedString alloc]
                                                                       initWithString:stdoutString]];
-        [[self stdoutTextField] scrollRangeToVisible:NSMakeRange([[[self stdoutTextField] string] length], 0)];
+        [[_logView stdoutTextField] scrollRangeToVisible:NSMakeRange([[[_logView stdoutTextField] string] length], 0)];
     }
     if (self.instance.isRunning) {
         [stdoutFileHandle waitForDataInBackgroundAndNotify];
@@ -139,9 +177,9 @@
         [_stderrLogOutput removeObjectAtIndex:0];
     }
     if (self.logsAreInView) {
-        [[[self stderrTextField] textStorage] appendAttributedString:[[NSAttributedString alloc]
+        [[[_logView stderrTextField] textStorage] appendAttributedString:[[NSAttributedString alloc]
                                                                       initWithString:stderrString]];
-        [[self stderrTextField] scrollRangeToVisible:NSMakeRange([[[self stderrTextField] string] length], 0)];
+        [[_logView stderrTextField] scrollRangeToVisible:NSMakeRange([[[_logView stderrTextField] string] length], 0)];
     }
     if (self.instance.isRunning) {
         [stderrFileHandle waitForDataInBackgroundAndNotify];

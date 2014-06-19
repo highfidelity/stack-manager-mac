@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "LogViewer.h"
 
 @interface AssignmentClientTask : NSObject {
     NSString *instanceWallet;
@@ -17,8 +18,7 @@
     NSFileHandle *instanceStderrorFileHandle;
 }
 
-@property NSTextView *stdoutTextField;
-@property NSTextView *stderrTextField;
+@property LogViewer *logView;
 @property NSTask *instance;
 @property NSInteger instanceType;
 @property NSString *typeName;
@@ -30,6 +30,7 @@
 - (id)initWithType:(NSInteger)thisInstanceType
             domain:(NSString *)thisInstanceDomain;
 
+- (void)displayLog;
 - (void)appendAndRotateStdoutLogs:(NSNotification *)notification;
 - (void)appendAndRotateStderrLogs:(NSNotification *)notification;
 

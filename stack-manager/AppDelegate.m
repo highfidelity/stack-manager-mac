@@ -10,7 +10,6 @@
 #import "GlobalData.h"
 
 @implementation AppDelegate
-@synthesize logViewer = _logViewer;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -18,7 +17,6 @@
     stopAllServersString = @"Stop All";
     
     assignmentInstances = [[NSMutableArray alloc] init];
-    _logViewer = [[LogViewer alloc] initWithWindowNibName:@"LogViewer"];
 }
 
 - (void)createExecutablePath
@@ -106,12 +104,7 @@
     long buttonTag = ((NSButton *)sender).tag;
     AssignmentClientTask *matchingTask = [self findAssignment:buttonTag];
     if (matchingTask) {
-        _logViewer.currentTask = matchingTask;
-        _logViewer.stdoutTextField = matchingTask.stdoutTextField;
-        _logViewer.stderrTextField = matchingTask.stderrTextField;
-        matchingTask.logsAreInView = YES;
-        [_logViewer loadLogDataIntoView];
-        [_logViewer showWindow:self];
+        [matchingTask displayLog];
     } else {
         NSLog(@"The assignment for the requested log is not running");
     }
