@@ -7,14 +7,18 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "LogViewer.h"
 #import "AssignmentClientTask.h"
+#import "LogViewer.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
+    NSString *startAllServersString;
+    NSString *stopAllServersString;
+    
     NSMutableArray *assignmentInstances;
-    LogViewer *logViewWindow;
+
 }
 
+@property LogViewer *logViewer;
 @property (assign) IBOutlet NSWindow *window;
 @property (weak) IBOutlet NSButton *domainServerStartButton;
 @property (weak) IBOutlet NSButton *domainServerViewLogButton;
@@ -30,6 +34,7 @@
 @property (weak) IBOutlet NSButton *particleServerViewLogButton;
 @property (weak) IBOutlet NSButton *metavoxelServerStartButton;
 @property (weak) IBOutlet NSButton *metavoxelServerViewLogButton;
+@property (weak) IBOutlet NSButton *startAllServersButton;
 
 - (void)createExecutablePath;
 - (void)downloadLatestExecutables;
@@ -41,6 +46,6 @@
 - (IBAction)startDomainServer:(id)sender;
 - (IBAction)displayLog:(id)sender;
 - (BOOL)doWeHaveThisTypeAlready:(NSInteger)instanceType;
-- (IBAction)createAllServers:(id)sender;
+- (IBAction)toggleAllServers:(id)sender;
 
 @end

@@ -17,12 +17,15 @@
     NSFileHandle *instanceStderrorFileHandle;
 }
 
+@property NSTextView *stdoutTextField;
+@property NSTextView *stderrTextField;
 @property NSTask *instance;
 @property NSInteger instanceType;
 @property NSString *typeName;
 @property NSString *instanceDomain;
 @property NSMutableArray *stdoutLogOutput;
 @property NSMutableArray *stderrLogOutput;
+@property BOOL logsAreInView;
 
 - (id)initWithType:(NSInteger)thisInstanceType
             domain:(NSString *)thisInstanceDomain;

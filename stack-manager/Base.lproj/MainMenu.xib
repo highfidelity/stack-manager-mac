@@ -25,6 +25,7 @@
                 <outlet property="modelServerViewLogButton" destination="2b8-HC-fA7" id="e6D-W1-f9L"/>
                 <outlet property="particleServerStartButton" destination="swv-IN-29c" id="DHZ-Gy-MBP"/>
                 <outlet property="particleServerViewLogButton" destination="8H8-TX-Alc" id="MHL-7B-yel"/>
+                <outlet property="startAllServersButton" destination="KTv-ex-cUw" id="wcg-IP-7Q3"/>
                 <outlet property="voxelServerStartButton" destination="PJl-2p-Df2" id="afV-y6-YP5"/>
                 <outlet property="voxelServerViewLogButton" destination="VUH-Ts-T8l" id="vGI-VX-Mqe"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
@@ -348,7 +349,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="createAllServers:" target="Voe-Tx-rLC" id="RPB-NT-0vk"/>
+                            <action selector="toggleAllServers:" target="Voe-Tx-rLC" id="hoI-nT-sye"/>
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cb7-oS-OyY">

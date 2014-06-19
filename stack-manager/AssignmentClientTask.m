@@ -8,15 +8,17 @@
 
 #import "AssignmentClientTask.h"
 #import "GlobalData.h"
-#import "LogViewer.h"
 
 @implementation AssignmentClientTask
+@synthesize stdoutTextField = _stdoutTextField;
+@synthesize stderrTextField = _stderrTextField;
 @synthesize instance = _instance;
 @synthesize typeName = _typeName;
 @synthesize instanceType = _instanceType;
 @synthesize instanceDomain = _instanceDomain;
 @synthesize stdoutLogOutput = _stdoutLogOutput;
 @synthesize stderrLogOutput = _stderrLogOutput;
+@synthesize logsAreInView = _logsAreInView;
 
 - (void)dealloc
 {
@@ -100,6 +102,7 @@
         
         _stdoutLogOutput = [[NSMutableArray alloc] init];
         _stderrLogOutput = [[NSMutableArray alloc] init];
+        _logsAreInView = NO;
     }
     return self;
 }
@@ -113,6 +116,12 @@
     [_stdoutLogOutput addObject:stdoutString];
     if ([_stdoutLogOutput count] > maxScrollBack) {
         [_stdoutLogOutput removeObjectAtIndex:0];
+    }
+    if (self.logsAreInView) {
+        NSLog(@"Logs are in view so we're updating it");
+        [[[self stdoutTextField] textStorage] appendAttributedString:[[NSAttributedString alloc]
+                                                                      initWithString:stdoutString]];
+        [[self stdoutTextField] scrollRangeToVisible:NSMakeRange([[[self stdoutTextField] string] length], 0)];
     }
     if (self.instance.isRunning) {
         [stdoutFileHandle waitForDataInBackgroundAndNotify];
@@ -128,6 +137,11 @@
     [_stderrLogOutput addObject:stderrString];
     if ([_stderrLogOutput count] > maxScrollBack) {
         [_stderrLogOutput removeObjectAtIndex:0];
+    }
+    if (self.logsAreInView) {
+        [[[self stderrTextField] textStorage] appendAttributedString:[[NSAttributedString alloc]
+                                                                      initWithString:stderrString]];
+        [[self stderrTextField] scrollRangeToVisible:NSMakeRange([[[self stderrTextField] string] length], 0)];
     }
     if (self.instance.isRunning) {
         [stderrFileHandle waitForDataInBackgroundAndNotify];

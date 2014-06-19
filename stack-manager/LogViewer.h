@@ -9,11 +9,13 @@
 #import <Cocoa/Cocoa.h>
 #import "AssignmentClientTask.h"
 
-@interface LogViewer : NSWindowController
+@interface LogViewer : NSWindowController <NSWindowDelegate>
+
 @property (weak) IBOutlet NSTextField *assignmentTypeLabel;
 @property (unsafe_unretained) IBOutlet NSTextView *stdoutTextField;
 @property (unsafe_unretained) IBOutlet NSTextView *stderrTextField;
+@property AssignmentClientTask *currentTask;
 
-- (void)loadStdoutDataIntoView:(AssignmentClientTask *)assignmentTask;
+- (void)loadLogDataIntoView;
 
 @end

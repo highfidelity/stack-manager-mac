@@ -10,17 +10,19 @@
 #import "GlobalData.h"
 
 @implementation AppDelegate
+@synthesize logViewer = _logViewer;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    startAllServersString = @"Start All";
+    stopAllServersString = @"Stop All";
+    
     assignmentInstances = [[NSMutableArray alloc] init];
-    logViewWindow = [[LogViewer alloc] initWithWindowNibName:@"LogViewer"];
+    _logViewer = [[LogViewer alloc] initWithWindowNibName:@"LogViewer"];
 }
 
 - (void)createExecutablePath
 {
-    // Make sure the path to store all components of this program exists.
-    // If it doesn't exist create it and define a global variable with it.
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error = nil;
     if (![fileManager createDirectoryAtPath:[GlobalData sharedGlobalData].clientsLaunchPath
@@ -67,7 +69,6 @@
 {
     long buttonTag = ((NSButton *)sender).tag;
     if (![self doWeHaveThisTypeAlready:(NSInteger)buttonTag]) {
-        NSLog(@"Creating Server with id %ld", buttonTag);
         AssignmentClientTask *thisTask = [[AssignmentClientTask alloc]
                                           initWithType:(NSInteger)buttonTag
                                           domain:[GlobalData sharedGlobalData].defaultDomain];
@@ -76,6 +77,11 @@
         [sender setTitle:@"Stop"];
     } else {
         NSLog(@"Assignment with id %ld already exists", buttonTag);
+    }
+    if ([assignmentInstances count] == [[GlobalData sharedGlobalData].availableAssignmentTypes count]) {
+        [self.startAllServersButton setTitle:stopAllServersString];
+    } else {
+        [self.startAllServersButton setTitle:startAllServersString];
     }
 }
 
@@ -87,6 +93,7 @@
     [[matchingTask instance] terminate];
     [assignmentInstances removeObjectAtIndex:indexOfInstance];
     [sender setTitle:@"Start"];
+    [self.startAllServersButton setTitle:startAllServersString];
 }
 
 - (IBAction)startDomainServer:(id)sender
@@ -99,8 +106,12 @@
     long buttonTag = ((NSButton *)sender).tag;
     AssignmentClientTask *matchingTask = [self findAssignment:buttonTag];
     if (matchingTask) {
-        [logViewWindow loadStdoutDataIntoView:matchingTask];
-        [logViewWindow showWindow:self];
+        _logViewer.currentTask = matchingTask;
+        _logViewer.stdoutTextField = matchingTask.stdoutTextField;
+        _logViewer.stderrTextField = matchingTask.stderrTextField;
+        matchingTask.logsAreInView = YES;
+        [_logViewer loadLogDataIntoView];
+        [_logViewer showWindow:self];
     } else {
         NSLog(@"The assignment for the requested log is not running");
     }
@@ -116,32 +127,37 @@
     return YES;
 }
 
-- (IBAction)createAllServers:(id)sender
+- (IBAction)toggleAllServers:(id)sender
 {
+    NSString *buttonTitle = ((NSButton *)sender).title;
     for (id assignmentType in [GlobalData sharedGlobalData].availableAssignmentTypes) {
-        if (![self doWeHaveThisTypeAlready:(NSInteger)assignmentType]) {
-            NSButton *associatedButton;
-            switch ([assignmentType intValue]) {
-                case 0:
-                    associatedButton = self.audioMixerStartButton;
-                    break;
-                case 1:
-                    associatedButton = self.avatarMixerStartButton;
-                    break;
-                case 3:
-                    associatedButton = self.voxelServerStartButton;
-                    break;
-                case 4:
-                    associatedButton = self.particleServerStartButton;
-                    break;
-                case 5:
-                    associatedButton = self.metavoxelServerStartButton;
-                    break;
-                case 6:
-                    associatedButton = self.modelServerStartButton;
-                    break;
-            }
+        NSButton *associatedButton;
+        switch ([assignmentType intValue]) {
+            case 0:
+                associatedButton = self.audioMixerStartButton;
+                break;
+            case 1:
+                associatedButton = self.avatarMixerStartButton;
+                break;
+            case 3:
+                associatedButton = self.voxelServerStartButton;
+                break;
+            case 4:
+                associatedButton = self.particleServerStartButton;
+                break;
+            case 5:
+                associatedButton = self.metavoxelServerStartButton;
+                break;
+            case 6:
+                associatedButton = self.modelServerStartButton;
+                break;
+        }
+        if ([buttonTitle isEqualToString:startAllServersString] &&
+            ![self doWeHaveThisTypeAlready:(NSInteger)[assignmentType intValue]]) {
             [self createServer:associatedButton];
+        } else if ([buttonTitle isEqualToString:stopAllServersString] &&
+                   [self doWeHaveThisTypeAlready:(NSInteger)[assignmentType intValue]]) {
+            [self destroyServer:associatedButton];
         }
     }
 }

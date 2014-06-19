@@ -13,6 +13,7 @@
 @end
 
 @implementation LogViewer
+@synthesize currentTask = _currentTask;
 
 - (id)initWithWindow:(NSWindow *)window
 {
@@ -30,13 +31,29 @@
     // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
 }
 
-- (void)loadStdoutDataIntoView:(AssignmentClientTask *)assignmentTask
+- (void)windowWillClose:(NSNotification *)notification
 {
+    if (_currentTask) {
+        self.currentTask.logsAreInView = NO;
+        self.currentTask = nil;
+    }
+}
+
+- (void)loadLogDataIntoView
+{
+    NSLog(@"Loading log data into view");
     [[self stdoutTextField] setString:@""];
-    for (NSString *stdoutLine in assignmentTask.stdoutLogOutput) {
-        [[[self stdoutTextField] textStorage] appendAttributedString:[[NSAttributedString alloc]
-                                                                      initWithString:stdoutLine]];
-        [[self stdoutTextField] scrollRangeToVisible:NSMakeRange([[[self stdoutTextField] string] length], 0)];
+    if (_currentTask) {
+        for (NSString *stdoutLine in _currentTask.stdoutLogOutput) {
+            [[[self stdoutTextField] textStorage] appendAttributedString:[[NSAttributedString alloc]
+                                                                          initWithString:stdoutLine]];
+            [[self stdoutTextField] scrollRangeToVisible:NSMakeRange([[[self stdoutTextField] string] length], 0)];
+        }
+        for (NSString *stderrLine in _currentTask.stderrLogOutput) {
+            [[[self stderrTextField] textStorage] appendAttributedString:[[NSAttributedString alloc]
+                                                                          initWithString:stderrLine]];
+            [[self stderrTextField] scrollRangeToVisible:NSMakeRange([[[self stderrTextField] string] length], 0)];
+        }
     }
 }
 
