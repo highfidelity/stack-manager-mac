@@ -16,9 +16,9 @@
     NSString *stopAllServersString;
     NSString *updatingString;
     NSString *upToDateString;
-    BOOL *qtReady;
-    BOOL *dsReady;
-    BOOL *acReady;
+    BOOL qtReady;
+    BOOL dsReady;
+    BOOL acReady;
     
     NSMutableArray *assignmentInstances;
     DomainServerTask *domainServer;

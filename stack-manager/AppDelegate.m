@@ -8,18 +8,22 @@
 
 #import "AppDelegate.h"
 #import "MD5.h"
+#import "SSZipArchive.h"
 #import "GlobalData.h"
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    [self downloadLatestExecutablesAndRequirements];
     startAllServersString = @"Start All";
     stopAllServersString = @"Stop All";
     updatingString = @"Updating ";
     upToDateString = @"Up to date | Updated: ";
+    qtReady = NO;
+    dsReady = NO;
+    acReady = NO;
     assignmentInstances = [[NSMutableArray alloc] init];
+    [self downloadLatestExecutablesAndRequirements];
 }
 
 - (void)createExecutablePath
@@ -39,13 +43,21 @@
 
 - (void)downloadLatestExecutablesAndRequirements
 {
+    NSLog(@"Checking what to update");
+    
+    NSLocale *currentLocale = [NSLocale currentLocale];
+    NSString *currentDateTime = [[NSString alloc] initWithString:[[NSDate date]
+                                                                  descriptionWithLocale:currentLocale]];
+                                 
     BOOL downloadQT = YES;
     BOOL downloadAC = YES;
     BOOL downloadDS = YES;
     
     // Determine if Qt needs to be downloaded
+    NSLog(@"Checking if qt is in place");
     NSString *qtCorePath = [[GlobalData sharedGlobalData].clientsLaunchPath stringByAppendingString:@"QtCore.framework"];
     if ([[NSFileManager defaultManager] fileExistsAtPath:qtCorePath]) {
+        NSLog(@"Qt is already in place");
         downloadQT = NO;
     }
     
@@ -53,19 +65,25 @@
     NSData *dsData = [NSData dataWithContentsOfFile:[GlobalData sharedGlobalData].domainServerExecutablePath];
     NSData *acData = [NSData dataWithContentsOfFile:[GlobalData sharedGlobalData].assignmentClientExecutablePath];
     
+    NSLog(@"These are the hashes for existing executables - DS: %@ | AC %@", [dsData MD5], [acData MD5]);
+    
     // Get latest client hashes
     NSString *latestACMD5 = [self getStringFromURL:[GlobalData sharedGlobalData].assignmentClientMD5URL];
     NSString *latestDSMD5 = [self getStringFromURL:[GlobalData sharedGlobalData].domainServerMD5URL];
+    NSLog(@"These are the hashes for latest executables - DS: %@ | AC %@", latestDSMD5, latestACMD5);
     
     if ([latestACMD5 isEqualToString:[acData MD5]]) {
+        NSLog(@"We should NOT download AC");
         downloadAC = NO;
     }
     
     if ([latestDSMD5 isEqualToString:[dsData MD5]]) {
+        NSLog(@"We should NOT download DS");
         downloadDS = NO;
     }
     
     if (downloadQT) {
+        NSLog(@"Downloading QT");
         [[self requirementsStatusTextfield] setStringValue:updatingString];
         NSURLSessionConfiguration *qtSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"qt"];
         NSURLSession *qtSession;
@@ -74,10 +92,14 @@
         NSURLSessionDownloadTask *qtDownloadTask = [qtSession downloadTaskWithRequest:qtRequest];
         [qtDownloadTask resume];
     } else {
-        [[self requirementsStatusTextfield] setStringValue:upToDateString];
+        NSLog(@"Setting requirements status to up to date");
+        qtReady = YES;
+        [_requirementsStatusTextfield setStringValue:[upToDateString stringByAppendingString:currentDateTime]];
+        NSLog(@" DONE Setting requirements status to up to date");
     }
     
     if (downloadAC) {
+        NSLog(@"Downloading AC");
         [[self assignmentClientStatusTextField] setStringValue:updatingString];
         NSURLSessionConfiguration *acSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"ac"];
         NSURLSession *acSession;
@@ -86,10 +108,14 @@
         NSURLSessionDownloadTask *acDownloadTask = [acSession downloadTaskWithRequest:acRequest];
         [acDownloadTask resume];
     } else {
-        [[self assignmentClientStatusTextField] setStringValue:upToDateString];
+        NSLog(@"Setting AC status to up to date");
+        dsReady = YES;
+        [_assignmentClientStatusTextField setStringValue:[upToDateString stringByAppendingString:currentDateTime]];
+        NSLog(@"DONE Setting AC status to up to date");
     }
     
     if (downloadDS) {
+        NSLog(@"Downloading DS");
         [[self domainServerStatusTextField] setStringValue:updatingString];
         NSURLSessionConfiguration *dsSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"ds"];
         NSURLSession *dsSession;
@@ -98,7 +124,10 @@
         NSURLSessionDownloadTask *dsDownloadTask = [dsSession downloadTaskWithRequest:dsRequest];
         [dsDownloadTask resume];
     } else {
-        [[self domainServerStatusTextField] setStringValue:upToDateString];
+        NSLog(@"Setting DS status to up to date");
+        acReady = YES;
+        [_domainServerStatusTextField setStringValue:[upToDateString stringByAppendingString:currentDateTime]];
+        NSLog(@"DONE Setting DS status to up to date");
     }
     
     [[self updateStatusTextField] setStringValue:@""];
@@ -234,6 +263,7 @@
 
 - (NSString *)getStringFromURL:(NSString *)url
 {
+    NSLog(@"Downloading from URL %@", url);
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setHTTPMethod:@"GET"];
     [request setURL:[NSURL URLWithString:url]];
@@ -247,7 +277,9 @@
         return nil;
     }
     
-    return [[NSString alloc] initWithData:oResponseData encoding:NSUTF8StringEncoding];
+    NSString *string = [[NSString alloc] initWithData:oResponseData encoding:NSUTF8StringEncoding];
+    NSLog(@"And this is the string we got: %@", string);
+    return string;
 }
 
 - (void)URLSession:(NSURLSession *)session
