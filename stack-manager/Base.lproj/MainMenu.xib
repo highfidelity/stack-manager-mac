@@ -161,7 +161,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="startDomainServer:" target="Voe-Tx-rLC" id="z99-LZ-E5y"/>
+                            <action selector="toggleDomainServer:" target="Voe-Tx-rLC" id="TxG-Fr-Tkk"/>
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cjf-Ld-rRJ">
@@ -197,7 +197,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="displayLog:" target="Voe-Tx-rLC" id="XBg-ma-EvP"/>
+                            <action selector="displayDomainServerLog:" target="Voe-Tx-rLC" id="p3h-Ah-QKb"/>
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zDG-9f-C3U">
@@ -217,7 +217,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="displayLog:" target="Voe-Tx-rLC" id="TMJ-VY-Y75"/>
+                            <action selector="displayAssignmentClientLog:" target="Voe-Tx-rLC" id="YRg-Sq-X4F"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E89-0X-lxV">
@@ -239,7 +239,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="displayLog:" target="Voe-Tx-rLC" id="Aob-sr-M2A"/>
+                            <action selector="displayAssignmentClientLog:" target="Voe-Tx-rLC" id="a8m-np-3Kt"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="zGj-g3-hyO">
@@ -261,7 +261,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="displayLog:" target="Voe-Tx-rLC" id="TjX-GA-lQv"/>
+                            <action selector="displayAssignmentClientLog:" target="Voe-Tx-rLC" id="luc-Ff-4id"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="PJl-2p-Df2">
@@ -283,7 +283,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="displayLog:" target="Voe-Tx-rLC" id="hWN-L0-23H"/>
+                            <action selector="displayAssignmentClientLog:" target="Voe-Tx-rLC" id="25E-ef-YFL"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="6" translatesAutoresizingMaskIntoConstraints="NO" id="AHt-g5-AWm">
@@ -305,7 +305,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="displayLog:" target="Voe-Tx-rLC" id="b87-Yi-xQR"/>
+                            <action selector="displayAssignmentClientLog:" target="Voe-Tx-rLC" id="olw-hi-Hda"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="swv-IN-29c">
@@ -327,7 +327,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="displayLog:" target="Voe-Tx-rLC" id="Vkm-Yq-ng4"/>
+                            <action selector="displayAssignmentClientLog:" target="Voe-Tx-rLC" id="LLA-86-f8H"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="5" translatesAutoresizingMaskIntoConstraints="NO" id="0RG-GL-y9U">

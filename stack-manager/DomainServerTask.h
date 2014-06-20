@@ -16,13 +16,12 @@
     NSFileHandle *instanceStderrorFileHandle;
 }
 
-@property (nonatomic, retain) LogViewer *logView;
-@property (nonatomic, retain) NSTask *instance;
-@property (nonatomic, retain) NSMutableArray *stdoutLogOutput;
-@property (nonatomic, retain) NSMutableArray *stderrLogOutput;
-@property (nonatomic) BOOL logsAreInView;
+@property LogViewer *logView;
+@property NSTask *instance;
+@property NSMutableArray *stdoutLogOutput;
+@property NSMutableArray *stderrLogOutput;
+@property BOOL logsAreInView;
 
-+ (id)domainServerManager;
 - (void)displayLog;
 - (void)appendAndRotateStdoutLogs:(NSNotification *)notification;
 - (void)appendAndRotateStderrLogs:(NSNotification *)notification;

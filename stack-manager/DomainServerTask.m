@@ -16,13 +16,15 @@
 @synthesize stderrLogOutput = _stderrLogOutput;
 @synthesize logsAreInView = _logsAreInView;
 
-+ (id)domainServerManager
+- (void)dealloc
 {
-    static DomainServerTask *globalDomainServer = nil;
-    if (!globalDomainServer) {
-        globalDomainServer = [[super allocWithZone:NULL] init];
-    }
-    return globalDomainServer;
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSFileHandleDataAvailableNotification
+                                                  object:instanceStdoutFilehandle];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSFileHandleDataAvailableNotification
+                                                  object:instanceStderrorFileHandle];
 }
 
 - (id)init {

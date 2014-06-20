@@ -97,12 +97,23 @@
     [self.startAllServersButton setTitle:startAllServersString];
 }
 
-- (IBAction)startDomainServer:(id)sender
+- (IBAction)toggleDomainServer:(id)sender
 {
-    [[[DomainServerTask domainServerManager] instance] launch];
+    if ([self.domainServerStartButton.title isEqualToString:@"Start"]) {
+        NSLog(@"We're starting domain-server");
+        domainServer = [[DomainServerTask alloc] init];
+        [[domainServer instance] launch];
+        [self.domainServerStartButton setTitle:@"Stop"];
+    } else {
+        NSLog(@"We're stopping domain-server");
+        [[domainServer instance] terminate];
+        domainServer = nil;
+        [self.domainServerStartButton setTitle:@"Start"];
+    }
+    
 }
 
-- (IBAction)displayLog:(id)sender
+- (IBAction)displayAssignmentClientLog:(id)sender
 {
     long buttonTag = ((NSButton *)sender).tag;
     AssignmentClientTask *matchingTask = [self findAssignment:buttonTag];
@@ -111,6 +122,11 @@
     } else {
         NSLog(@"The assignment for the requested log is not running");
     }
+}
+
+- (IBAction)displayDomainServerLog:(id)sender
+{
+    [domainServer displayLog];
 }
 
 - (BOOL)doWeHaveThisTypeAlready:(NSInteger)instanceType

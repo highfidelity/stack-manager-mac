@@ -16,7 +16,7 @@
     NSString *stopAllServersString;
     
     NSMutableArray *assignmentInstances;
-
+    DomainServerTask *domainServer;
 }
 
 @property (assign) IBOutlet NSWindow *window;
@@ -43,8 +43,9 @@
 - (IBAction)toggleServer:(id)sender;
 - (IBAction)createServer:(id)sender;
 - (IBAction)destroyServer:(id)sender;
-- (IBAction)startDomainServer:(id)sender;
-- (IBAction)displayLog:(id)sender;
+- (IBAction)toggleDomainServer:(id)sender;
+- (IBAction)displayAssignmentClientLog:(id)sender;
+- (IBAction)displayDomainServerLog:(id)sender;
 - (BOOL)doWeHaveThisTypeAlready:(NSInteger)instanceType;
 - (IBAction)toggleAllServers:(id)sender;
 
