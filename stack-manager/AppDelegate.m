@@ -7,15 +7,18 @@
 //
 
 #import "AppDelegate.h"
+#import "MD5.h"
 #import "GlobalData.h"
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [self downloadLatestExecutablesAndRequirements];
     startAllServersString = @"Start All";
     stopAllServersString = @"Stop All";
-    
+    updatingString = @"Updating";
+    upToDateString = @"Up to date";
     assignmentInstances = [[NSMutableArray alloc] init];
 }
 
@@ -34,14 +37,71 @@
     
 }
 
-- (void)downloadLatestExecutables
+- (void)downloadLatestExecutablesAndRequirements
 {
+    BOOL downloadQT = YES;
+    BOOL downloadAC = YES;
+    BOOL downloadDS = YES;
     
-}
-
-- (void)downloadRequirements
-{
+    // Determine if Qt needs to be downloaded
+    NSString *qtCorePath = [[GlobalData sharedGlobalData].clientsLaunchPath stringByAppendingString:@"QtCore.framework"];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:qtCorePath]) {
+        downloadQT = NO;
+    }
     
+    // Generate hash for installed clients
+    NSData *dsData = [NSData dataWithContentsOfFile:[GlobalData sharedGlobalData].domainServerExecutablePath];
+    NSData *acData = [NSData dataWithContentsOfFile:[GlobalData sharedGlobalData].assignmentClientExecutablePath];
+    
+    // Get latest client hashes
+    NSString *latestACMD5 = [self getStringFromURL:[GlobalData sharedGlobalData].assignmentClientMD5URL];
+    NSString *latestDSMD5 = [self getStringFromURL:[GlobalData sharedGlobalData].domainServerMD5URL];
+    
+    if ([latestACMD5 isEqualToString:[acData MD5]]) {
+        downloadAC = NO;
+    }
+    
+    if ([latestDSMD5 isEqualToString:[dsData MD5]]) {
+        downloadDS = NO;
+    }
+    
+    if (downloadQT) {
+        [[self requirementsStatusTextfield] setStringValue:updatingString];
+        NSURLSessionConfiguration *qtSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"qt"];
+        NSURLSession *qtSession;
+        qtSession = [NSURLSession sessionWithConfiguration:qtSessionConfig delegate:self delegateQueue:nil];
+        NSURLRequest *qtRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[GlobalData sharedGlobalData].requirementsURL]];
+        NSURLSessionDownloadTask *qtDownloadTask = [qtSession downloadTaskWithRequest:qtRequest];
+        [qtDownloadTask resume];
+    } else {
+        [[self requirementsStatusTextfield] setStringValue:upToDateString];
+    }
+    
+    if (downloadAC) {
+        [[self assignmentClientStatusTextField] setStringValue:updatingString];
+        NSURLSessionConfiguration *acSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"ac"];
+        NSURLSession *acSession;
+        acSession = [NSURLSession sessionWithConfiguration:acSessionConfig delegate:self delegateQueue:nil];
+        NSURLRequest *acRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[GlobalData sharedGlobalData].assignmentClientURL]];
+        NSURLSessionDownloadTask *acDownloadTask = [acSession downloadTaskWithRequest:acRequest];
+        [acDownloadTask resume];
+    } else {
+        [[self assignmentClientStatusTextField] setStringValue:upToDateString];
+    }
+    
+    if (downloadDS) {
+        [[self domainServerStatusTextField] setStringValue:updatingString];
+        NSURLSessionConfiguration *dsSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"ds"];
+        NSURLSession *dsSession;
+        dsSession = [NSURLSession sessionWithConfiguration:dsSessionConfig delegate:self delegateQueue:nil];
+        NSURLRequest *dsRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[GlobalData sharedGlobalData].domainServerURL]];
+        NSURLSessionDownloadTask *dsDownloadTask = [dsSession downloadTaskWithRequest:dsRequest];
+        [dsDownloadTask resume];
+    } else {
+        [[self domainServerStatusTextField] setStringValue:upToDateString];
+    }
+    
+    [[self updateStatusTextField] setStringValue:@""];
 }
 
 - (AssignmentClientTask *)findAssignment:(long)assignmentType
@@ -100,12 +160,10 @@
 - (IBAction)toggleDomainServer:(id)sender
 {
     if ([self.domainServerStartButton.title isEqualToString:@"Start"]) {
-        NSLog(@"We're starting domain-server");
         domainServer = [[DomainServerTask alloc] init];
         [[domainServer instance] launch];
         [self.domainServerStartButton setTitle:@"Stop"];
     } else {
-        NSLog(@"We're stopping domain-server");
         [[domainServer instance] terminate];
         domainServer = nil;
         [self.domainServerStartButton setTitle:@"Start"];
@@ -172,6 +230,24 @@
             [self destroyServer:associatedButton];
         }
     }
+}
+
+- (NSString *)getStringFromURL:(NSString *)url
+{
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setHTTPMethod:@"GET"];
+    [request setURL:[NSURL URLWithString:url]];
+    NSError *error = [[NSError alloc] init];
+    NSHTTPURLResponse *responseCode = nil;
+    
+    NSData *oResponseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&responseCode error:&error];
+    
+    if([responseCode statusCode] != 200){
+        NSLog(@"Error getting %@, HTTP status code %d", url, (int)[responseCode statusCode]);
+        return nil;
+    }
+    
+    return [[NSString alloc] initWithData:oResponseData encoding:NSUTF8StringEncoding];
 }
 
 @end

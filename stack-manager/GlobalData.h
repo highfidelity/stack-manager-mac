@@ -25,6 +25,8 @@
 @property (nonatomic, retain) NSString *requirementsURL;
 @property (nonatomic, retain) NSString *assignmentClientURL;
 @property (nonatomic, retain) NSString *domainServerURL;
+@property (nonatomic, retain) NSString *assignmentClientMD5URL;
+@property (nonatomic, retain) NSString *domainServerMD5URL;
 @property (nonatomic, retain) NSString *defaultDomain;
 @property (nonatomic, retain) NSArray *availableAssignmentTypes;
 

@@ -15,6 +15,8 @@
 @synthesize requirementsURL;
 @synthesize assignmentClientURL;
 @synthesize domainServerURL;
+@synthesize assignmentClientMD5URL;
+@synthesize domainServerMD5URL;
 @synthesize defaultDomain;
 @synthesize availableAssignmentTypes;
 
@@ -37,9 +39,16 @@ static GlobalData *sharedGlobalData = nil;
         sharedGlobalData.domainServerExecutablePath = [sharedGlobalData.clientsLaunchPath stringByAppendingString:domainServerExecutable];
         
         // Define other global constants
-        sharedGlobalData.requirementsURL = @"https://s3-us-west-1.amazonaws.com/highfidelity-public/assignment-client/mac/qt.zip";
-        sharedGlobalData.assignmentClientURL = @"https://s3-us-west-1.amazonaws.com/highfidelity-public/assignment-client/mac/assignment-client";
-        sharedGlobalData.domainServerURL = @"https://s3-us-west-1.amazonaws.com/highfidelity-public/domain-server/mca/domain-server";
+        sharedGlobalData.requirementsURL =
+        @"https://s3-us-west-1.amazonaws.com/highfidelity-public/requirementes/mac/qt.zip";
+        sharedGlobalData.assignmentClientURL =
+        @"https://s3-us-west-1.amazonaws.com/highfidelity-public/assignment-client/mac/assignment-client";
+        sharedGlobalData.domainServerURL =
+        @"https://s3-us-west-1.amazonaws.com/highfidelity-public/domain-server/mca/domain-server";
+        
+        sharedGlobalData.assignmentClientMD5URL = [sharedGlobalData.assignmentClientURL stringByAppendingString:@".md5"];
+        sharedGlobalData.domainServerMD5URL = [sharedGlobalData.domainServerURL stringByAppendingString:@".md5"];
+        
         sharedGlobalData.defaultDomain = @"localhost";
         sharedGlobalData.availableAssignmentTypes = [[NSArray alloc] initWithObjects:
                                                      [NSNumber numberWithInt: 0],

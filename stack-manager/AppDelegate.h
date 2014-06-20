@@ -14,6 +14,8 @@
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
     NSString *startAllServersString;
     NSString *stopAllServersString;
+    NSString *updatingString;
+    NSString *upToDateString;
     
     NSMutableArray *assignmentInstances;
     DomainServerTask *domainServer;
@@ -35,10 +37,13 @@
 @property (weak) IBOutlet NSButton *metavoxelServerStartButton;
 @property (weak) IBOutlet NSButton *metavoxelServerViewLogButton;
 @property (weak) IBOutlet NSButton *startAllServersButton;
+@property (weak) IBOutlet NSTextField *updateStatusTextField;
+@property (weak) IBOutlet NSTextField *requirementsStatusTextfield;
+@property (weak) IBOutlet NSTextField *domainServerStatusTextField;
+@property (weak) IBOutlet NSTextField *assignmentClientStatusTextField;
 
 - (void)createExecutablePath;
-- (void)downloadLatestExecutables;
-- (void)downloadRequirements;
+- (void)downloadLatestExecutablesAndRequirements;
 - (AssignmentClientTask *)findAssignment:(long)assignmentType;
 - (IBAction)toggleServer:(id)sender;
 - (IBAction)createServer:(id)sender;
@@ -48,5 +53,6 @@
 - (IBAction)displayDomainServerLog:(id)sender;
 - (BOOL)doWeHaveThisTypeAlready:(NSInteger)instanceType;
 - (IBAction)toggleAllServers:(id)sender;
+- (NSString *)getStringFromURL:(NSString *)url;
 
 @end

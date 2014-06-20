@@ -33,8 +33,6 @@
 - (id)initWithType:(NSInteger)thisInstanceType
             domain:(NSString *)thisInstanceDomain
 {
-    NSLog(@"Creating new assignment task of type %zd", thisInstanceType);
-    NSLog(@"Expecting to run task from %@", [GlobalData sharedGlobalData].assignmentClientExecutablePath);
     self = [super init];
     if (self) {
         switch ((int)thisInstanceType) {
