@@ -17,8 +17,8 @@
     [self downloadLatestExecutablesAndRequirements];
     startAllServersString = @"Start All";
     stopAllServersString = @"Stop All";
-    updatingString = @"Updating";
-    upToDateString = @"Up to date";
+    updatingString = @"Updating ";
+    upToDateString = @"Up to date | Updated: ";
     assignmentInstances = [[NSMutableArray alloc] init];
 }
 
@@ -248,6 +248,49 @@
     }
     
     return [[NSString alloc] initWithData:oResponseData encoding:NSUTF8StringEncoding];
+}
+
+- (void)URLSession:(NSURLSession *)session
+      downloadTask:(NSURLSessionDownloadTask *)downloadTask
+didFinishDownloadingToURL:(NSURL *)location
+{
+    NSError *error;
+    if ([[session configuration].identifier isEqualToString:@"qt"]) {
+        
+    } else if ([[session configuration].identifier isEqualToString:@"ac"] ||
+               [[session configuration].identifier isEqualToString:@"ds"]) {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSString *savePath;
+        if ([[session configuration].identifier isEqualToString:@"ac"]) {
+            savePath = [GlobalData sharedGlobalData].assignmentClientExecutablePath;
+        } else if ([[session configuration].identifier isEqualToString:@"ds"]) {
+            savePath = [GlobalData sharedGlobalData].domainServerExecutablePath;
+        }
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session
+      downloadTask:(NSURLSessionDownloadTask *)downloadTask
+      didWriteData:(int64_t)bytesWritten
+ totalBytesWritten:(int64_t)totalBytesWritten
+totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+{
+    NSTextField *textFieldForTask;
+    NSLocale *currentLocale = [NSLocale currentLocale];
+    NSString *currentDateTime = [[NSString alloc] initWithString:[[NSDate date] descriptionWithLocale:currentLocale]];
+    if ([[session configuration].identifier isEqualToString:@"qt"]) {
+        textFieldForTask = self.requirementsStatusTextfield;
+    } else if ([[session configuration].identifier isEqualToString:@"ds"]) {
+        textFieldForTask = self.domainServerStatusTextField;
+    } else if ([[session configuration].identifier isEqualToString:@"ac"]) {
+        textFieldForTask = self.assignmentClientStatusTextField;
+    }
+    NSInteger percentageCompleted = (totalBytesWritten * 100)/totalBytesExpectedToWrite;
+    if (percentageCompleted < 100) {
+        [textFieldForTask setStringValue:[updatingString stringByAppendingString:[NSString stringWithFormat:@"(%d %%)", (int)percentageCompleted]]];
+    } else {
+        [textFieldForTask setStringValue:[upToDateString stringByAppendingString:currentDateTime]];
+    }
 }
 
 @end

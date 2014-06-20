@@ -44,7 +44,7 @@ static GlobalData *sharedGlobalData = nil;
         sharedGlobalData.assignmentClientURL =
         @"https://s3-us-west-1.amazonaws.com/highfidelity-public/assignment-client/mac/assignment-client";
         sharedGlobalData.domainServerURL =
-        @"https://s3-us-west-1.amazonaws.com/highfidelity-public/domain-server/mca/domain-server";
+        @"https://s3-us-west-1.amazonaws.com/highfidelity-public/domain-server/mac/domain-server";
         
         sharedGlobalData.assignmentClientMD5URL = [sharedGlobalData.assignmentClientURL stringByAppendingString:@".md5"];
         sharedGlobalData.domainServerMD5URL = [sharedGlobalData.domainServerURL stringByAppendingString:@".md5"];

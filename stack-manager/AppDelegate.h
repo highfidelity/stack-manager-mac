@@ -16,6 +16,9 @@
     NSString *stopAllServersString;
     NSString *updatingString;
     NSString *upToDateString;
+    BOOL *qtReady;
+    BOOL *dsReady;
+    BOOL *acReady;
     
     NSMutableArray *assignmentInstances;
     DomainServerTask *domainServer;
@@ -54,5 +57,13 @@
 - (BOOL)doWeHaveThisTypeAlready:(NSInteger)instanceType;
 - (IBAction)toggleAllServers:(id)sender;
 - (NSString *)getStringFromURL:(NSString *)url;
+- (void)URLSession:(NSURLSession *)session
+      downloadTask:(NSURLSessionDownloadTask *)downloadTask
+didFinishDownloadingToURL:(NSURL *)location;
+- (void)URLSession:(NSURLSession *)session
+      downloadTask:(NSURLSessionDownloadTask *)downloadTask
+      didWriteData:(int64_t)bytesWritten
+ totalBytesWritten:(int64_t)totalBytesWritten
+totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite;
 
 @end
