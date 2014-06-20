@@ -48,6 +48,9 @@
 {
     NSPredicate *findByType = [NSPredicate predicateWithFormat:@"self.instanceType == %d", (NSInteger)assignmentType];
     NSArray *typeMatches = [assignmentInstances filteredArrayUsingPredicate:findByType];
+    if (!typeMatches || !typeMatches.count) {
+        return nil;
+    }
     AssignmentClientTask *matchingTask = [typeMatches objectAtIndex:0];
     typeMatches = nil;
     return matchingTask;
@@ -96,7 +99,7 @@
 
 - (IBAction)startDomainServer:(id)sender
 {
-    
+    [[[DomainServerTask domainServerManager] instance] launch];
 }
 
 - (IBAction)displayLog:(id)sender

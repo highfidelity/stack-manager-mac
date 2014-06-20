@@ -7,8 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "AssignmentClientTask.h"
 #import "LogViewer.h"
+#import "AssignmentClientTask.h"
+#import "DomainServerTask.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
     NSString *startAllServersString;
