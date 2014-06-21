@@ -40,7 +40,6 @@
 @property (weak) IBOutlet NSButton *metavoxelServerStartButton;
 @property (weak) IBOutlet NSButton *metavoxelServerViewLogButton;
 @property (weak) IBOutlet NSButton *startAllServersButton;
-@property (weak) IBOutlet NSTextField *updateStatusTextField;
 @property (weak) IBOutlet NSTextField *requirementsStatusTextfield;
 @property (weak) IBOutlet NSTextField *domainServerStatusTextField;
 @property (weak) IBOutlet NSTextField *assignmentClientStatusTextField;
