@@ -23,11 +23,13 @@
     dsReady = NO;
     acReady = NO;
     assignmentInstances = [[NSMutableArray alloc] init];
+    [self createExecutablePath];
     [self downloadLatestExecutablesAndRequirements];
 }
 
 - (void)createExecutablePath
 {
+    NSLog(@"Creating path for executables");
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error = nil;
     if (![fileManager createDirectoryAtPath:[GlobalData sharedGlobalData].clientsLaunchPath
@@ -72,6 +74,7 @@
     }
     
     if (downloadQT) {
+        NSLog(@"We need to download Qt");
         [[self requirementsStatusTextfield] setStringValue:updatingString];
         NSURLSessionConfiguration *qtSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"qt"];
         NSURLSession *qtSession;
@@ -79,6 +82,7 @@
         NSURLRequest *qtRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[GlobalData sharedGlobalData].requirementsURL]];
         NSURLSessionDownloadTask *qtDownloadTask = [qtSession downloadTaskWithRequest:qtRequest];
         [qtDownloadTask resume];
+        NSLog(@"We've triggered the download task");
     } else {
         qtReady = YES;
         [_requirementsStatusTextfield setStringValue:[upToDateString stringByAppendingString:currentDateTime]];
@@ -264,17 +268,38 @@ didFinishDownloadingToURL:(NSURL *)location
 {
     NSError *error;
     if ([[session configuration].identifier isEqualToString:@"qt"]) {
-        
+        BOOL success = [SSZipArchive unzipFileAtPath:[location path] toDestination:[GlobalData sharedGlobalData].clientsLaunchPath];
+        if (success) {
+            qtReady = YES;
+        } else {
+            NSLog(@"Unable to unzip Qt requirements");
+        }
     } else if ([[session configuration].identifier isEqualToString:@"ac"] ||
                [[session configuration].identifier isEqualToString:@"ds"]) {
         NSFileManager *fileManager = [NSFileManager defaultManager];
         NSString *savePath;
         if ([[session configuration].identifier isEqualToString:@"ac"]) {
+            [fileManager removeItemAtPath:[GlobalData sharedGlobalData].assignmentClientExecutablePath error:&error];
             savePath = [GlobalData sharedGlobalData].assignmentClientExecutablePath;
         } else if ([[session configuration].identifier isEqualToString:@"ds"]) {
+            [fileManager removeItemAtPath:[GlobalData sharedGlobalData].domainServerExecutablePath error:&error];
             savePath = [GlobalData sharedGlobalData].domainServerExecutablePath;
         }
-        
+        BOOL success = [fileManager moveItemAtPath:[location path] toPath:savePath error:&error];
+        if (success) {
+            NSDictionary *attributes;
+            NSNumber *permissions;
+            permissions = [NSNumber numberWithUnsignedLong: 493];
+            attributes = [NSDictionary dictionaryWithObject:permissions forKey:NSFilePosixPermissions];
+            [fileManager setAttributes:attributes ofItemAtPath:savePath error:&error];
+            if ([[session configuration].identifier isEqualToString:@"ac"]) {
+                acReady = YES;
+            } else if ([[session configuration].identifier isEqualToString:@"ds"]) {
+                dsReady = YES;
+            }
+        } else {
+            NSLog(@"Couldnt copy the downloaded file - error %@", [error localizedDescription]);
+        }
     }
 }
 

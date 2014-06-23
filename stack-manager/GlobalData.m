@@ -40,7 +40,7 @@ static GlobalData *sharedGlobalData = nil;
         
         // Define other global constants
         sharedGlobalData.requirementsURL =
-        @"https://s3-us-west-1.amazonaws.com/highfidelity-public/requirementes/mac/qt.zip";
+        @"https://s3-us-west-1.amazonaws.com/highfidelity-public/requirements/mac/qt.zip";
         sharedGlobalData.assignmentClientURL =
         @"https://s3-us-west-1.amazonaws.com/highfidelity-public/assignment-client/mac/assignment-client";
         sharedGlobalData.domainServerURL =
