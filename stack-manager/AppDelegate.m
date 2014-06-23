@@ -36,7 +36,6 @@
 
 - (void)createExecutablePath
 {
-    NSLog(@"Creating path for executables");
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error = nil;
     if (![fileManager createDirectoryAtPath:[GlobalData sharedGlobalData].clientsLaunchPath
@@ -52,7 +51,6 @@
 
 - (void)downloadLatestExecutablesAndRequirements
 {
-    NSLog(@"Checking what to update");
     NSCharacterSet *cleanUpCharacters = [[NSCharacterSet alphanumericCharacterSet] invertedSet];
     
     NSLocale *currentLocale = [NSLocale currentLocale];
@@ -72,22 +70,16 @@
     NSData *acData = [NSData dataWithContentsOfFile:[GlobalData sharedGlobalData].assignmentClientExecutablePath];
     NSString *latestACMD5 = [[[self getStringFromURL:[GlobalData sharedGlobalData].assignmentClientMD5URL] componentsSeparatedByCharactersInSet:cleanUpCharacters] componentsJoinedByString:@""];
     NSString *latestDSMD5 = [[[self getStringFromURL:[GlobalData sharedGlobalData].domainServerMD5URL] componentsSeparatedByCharactersInSet:cleanUpCharacters] componentsJoinedByString:@""];
-    
-    NSLog(@"AC: Current MD5: %@ (length: %lu) - Online MD5 %@ (length %lu)", [acData MD5], (unsigned long)[[acData MD5] length], latestACMD5, (unsigned long)[latestDSMD5 length]);
-    NSLog(@"DS: Current MD5: %@ - Online MD5 %@", [dsData MD5], latestDSMD5);
-    
+
     if ([latestACMD5 isEqual:[acData MD5]]) {
-        NSLog(@"ACMD5 is equal");
         downloadAC = NO;
     }
     
     if ([latestDSMD5 isEqual:[dsData MD5]]) {
-        NSLog(@"DSMD5 is equal");
         downloadDS = NO;
     }
     
     if (downloadQT) {
-        NSLog(@"We need to download Qt");
         [[self requirementsStatusTextfield] setStringValue:updatingString];
         NSURLSessionConfiguration *qtSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"qt"];
         NSURLSession *qtSession;
@@ -95,14 +87,12 @@
         NSURLRequest *qtRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[GlobalData sharedGlobalData].requirementsURL]];
         NSURLSessionDownloadTask *qtDownloadTask = [qtSession downloadTaskWithRequest:qtRequest];
         [qtDownloadTask resume];
-        NSLog(@"We've triggered the download task");
     } else {
         qtReady = YES;
         [_requirementsStatusTextfield setStringValue:[upToDateString stringByAppendingString:currentDateTime]];
     }
     
     if (downloadAC) {
-        NSLog(@"We need to download ac");
         [[self assignmentClientStatusTextField] setStringValue:updatingString];
         NSURLSessionConfiguration *acSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"ac"];
         NSURLSession *acSession;
@@ -116,7 +106,6 @@
     }
     
     if (downloadDS) {
-        NSLog(@"We need to download DS");
         [[self domainServerStatusTextField] setStringValue:updatingString];
         NSURLSessionConfiguration *dsSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"ds"];
         NSURLSession *dsSession;
