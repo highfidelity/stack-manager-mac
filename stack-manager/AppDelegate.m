@@ -25,6 +25,13 @@
     assignmentInstances = [[NSMutableArray alloc] init];
     [self createExecutablePath];
     [self downloadLatestExecutablesAndRequirements];
+    
+    NSTimer *periodicUpdate = [NSTimer scheduledTimerWithTimeInterval: 60.0
+                                                               target: self
+                               selector:@selector(downloadLatestExecutablesAndRequirements)
+                                                             userInfo:nil
+                                                              repeats:YES];
+    
 }
 
 - (void)createExecutablePath
@@ -46,6 +53,7 @@
 - (void)downloadLatestExecutablesAndRequirements
 {
     NSLog(@"Checking what to update");
+    NSCharacterSet *cleanUpCharacters = [[NSCharacterSet alphanumericCharacterSet] invertedSet];
     
     NSLocale *currentLocale = [NSLocale currentLocale];
     NSString *currentDateTime = [[NSString alloc] initWithString:[[NSDate date]
@@ -62,14 +70,19 @@
     
     NSData *dsData = [NSData dataWithContentsOfFile:[GlobalData sharedGlobalData].domainServerExecutablePath];
     NSData *acData = [NSData dataWithContentsOfFile:[GlobalData sharedGlobalData].assignmentClientExecutablePath];
-    NSString *latestACMD5 = [self getStringFromURL:[GlobalData sharedGlobalData].assignmentClientMD5URL];
-    NSString *latestDSMD5 = [self getStringFromURL:[GlobalData sharedGlobalData].domainServerMD5URL];
+    NSString *latestACMD5 = [[[self getStringFromURL:[GlobalData sharedGlobalData].assignmentClientMD5URL] componentsSeparatedByCharactersInSet:cleanUpCharacters] componentsJoinedByString:@""];
+    NSString *latestDSMD5 = [[[self getStringFromURL:[GlobalData sharedGlobalData].domainServerMD5URL] componentsSeparatedByCharactersInSet:cleanUpCharacters] componentsJoinedByString:@""];
     
-    if ([latestACMD5 isEqualToString:[acData MD5]]) {
+    NSLog(@"AC: Current MD5: %@ (length: %lu) - Online MD5 %@ (length %lu)", [acData MD5], (unsigned long)[[acData MD5] length], latestACMD5, (unsigned long)[latestDSMD5 length]);
+    NSLog(@"DS: Current MD5: %@ - Online MD5 %@", [dsData MD5], latestDSMD5);
+    
+    if ([latestACMD5 isEqual:[acData MD5]]) {
+        NSLog(@"ACMD5 is equal");
         downloadAC = NO;
     }
     
-    if ([latestDSMD5 isEqualToString:[dsData MD5]]) {
+    if ([latestDSMD5 isEqual:[dsData MD5]]) {
+        NSLog(@"DSMD5 is equal");
         downloadDS = NO;
     }
     
@@ -89,6 +102,7 @@
     }
     
     if (downloadAC) {
+        NSLog(@"We need to download ac");
         [[self assignmentClientStatusTextField] setStringValue:updatingString];
         NSURLSessionConfiguration *acSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"ac"];
         NSURLSession *acSession;
@@ -102,6 +116,7 @@
     }
     
     if (downloadDS) {
+        NSLog(@"We need to download DS");
         [[self domainServerStatusTextField] setStringValue:updatingString];
         NSURLSessionConfiguration *dsSessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:@"ds"];
         NSURLSession *dsSession;
@@ -112,6 +127,10 @@
     } else {
         acReady = YES;
         [_domainServerStatusTextField setStringValue:[upToDateString stringByAppendingString:currentDateTime]];
+    }
+    
+    if (downloadAC || downloadDS) {
+        [self restartAllServers];
     }
 }
 
@@ -179,7 +198,6 @@
         domainServer = nil;
         [self.domainServerStartButton setTitle:@"Start"];
     }
-    
 }
 
 - (IBAction)displayAssignmentClientLog:(id)sender
@@ -240,6 +258,40 @@
                    [self doWeHaveThisTypeAlready:(NSInteger)[assignmentType intValue]]) {
             [self destroyServer:associatedButton];
         }
+    }
+}
+
+- (void)restartAllServers
+{
+    NSMutableArray *currentRunningTasks = [[NSMutableArray alloc] init];
+    for (AssignmentClientTask *thisTask in assignmentInstances) {
+        NSNumber *thisType = [[NSNumber alloc] initWithInteger:thisTask.instanceType];
+        [currentRunningTasks addObject:thisType];
+    }
+    for (NSNumber *runningTask in currentRunningTasks) {
+        NSButton *associatedButton;
+        switch ([runningTask intValue]) {
+            case 0:
+                associatedButton = self.audioMixerStartButton;
+                break;
+            case 1:
+                associatedButton = self.avatarMixerStartButton;
+                break;
+            case 3:
+                associatedButton = self.voxelServerStartButton;
+                break;
+            case 4:
+                associatedButton = self.particleServerStartButton;
+                break;
+            case 5:
+                associatedButton = self.metavoxelServerStartButton;
+                break;
+            case 6:
+                associatedButton = self.modelServerStartButton;
+                break;
+        }
+        [self destroyServer:associatedButton];
+        [self createServer:associatedButton];
     }
 }
 
@@ -325,6 +377,13 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
     } else {
         [textFieldForTask setStringValue:[upToDateString stringByAppendingString:currentDateTime]];
     }
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification
+{
+    NSButton *stopAllButton = [[NSButton alloc] init];
+    [stopAllButton setTitle:@"Stop All"];
+    [self toggleAllServers:stopAllButton];
 }
 
 @end

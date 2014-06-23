@@ -55,6 +55,7 @@
 - (IBAction)displayDomainServerLog:(id)sender;
 - (BOOL)doWeHaveThisTypeAlready:(NSInteger)instanceType;
 - (IBAction)toggleAllServers:(id)sender;
+- (void)restartAllServers;
 - (NSString *)getStringFromURL:(NSString *)url;
 - (void)URLSession:(NSURLSession *)session
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
