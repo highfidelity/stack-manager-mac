@@ -38,7 +38,7 @@
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error = nil;
-    if (![fileManager createDirectoryAtPath:[GlobalData sharedGlobalData].clientsLaunchPath
+    if (![fileManager createDirectoryAtPath:[GlobalData sharedGlobalData].clientsResourcePath
                 withIntermediateDirectories:YES
                                  attributes:nil
                                       error:&error]) {

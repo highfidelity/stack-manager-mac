@@ -10,6 +10,7 @@
 
 @implementation GlobalData
 @synthesize clientsLaunchPath;
+@synthesize clientsResourcePath;
 @synthesize assignmentClientExecutablePath;
 @synthesize domainServerExecutablePath;
 @synthesize requirementsURL;
@@ -28,6 +29,7 @@ static GlobalData *sharedGlobalData = nil;
         
         // Define global path for assignment-client
         NSString *stackManagerPath = @"/High Fidelity/stack-manager/";
+        NSString *resourcePath = [stackManagerPath stringByAppendingString:@"resources/"];
         NSString *assignmentClientExecutable = @"assignment-client";
         NSString *domainServerExecutable = @"domain-server";
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
@@ -35,6 +37,7 @@ static GlobalData *sharedGlobalData = nil;
                                                              YES);
         NSString *applicationSupportDirectory = [paths firstObject];
         sharedGlobalData.clientsLaunchPath = [applicationSupportDirectory stringByAppendingString:stackManagerPath];
+        sharedGlobalData.clientsResourcePath = [applicationSupportDirectory stringByAppendingString:resourcePath];
         sharedGlobalData.assignmentClientExecutablePath = [sharedGlobalData.clientsLaunchPath stringByAppendingString:assignmentClientExecutable];
         sharedGlobalData.domainServerExecutablePath = [sharedGlobalData.clientsLaunchPath stringByAppendingString:domainServerExecutable];
         

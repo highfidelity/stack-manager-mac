@@ -71,6 +71,7 @@
         
         [_instance setLaunchPath: [GlobalData sharedGlobalData].assignmentClientExecutablePath];
         [_instance setArguments: assignmentArguments];
+        [_instance setCurrentDirectoryPath:[GlobalData sharedGlobalData].clientsLaunchPath];
         [_instance setStandardOutput: instanceStdoutPipe];
         [_instance setStandardError: instanceStderrorPipe];
         [_instance setStandardInput: [NSPipe pipe]];

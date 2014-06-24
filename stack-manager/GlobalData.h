@@ -10,6 +10,7 @@
 
 @interface GlobalData : NSObject {
     NSString *clientsLaunchPath;
+    NSString *clientsResourcePath;
     NSString *assignmentClientExecutablePath;
     NSString *domainServerExecutablePath;
     NSString *requirementsURL;
@@ -20,6 +21,7 @@
 }
 
 @property (nonatomic, retain) NSString *clientsLaunchPath;
+@property (nonatomic, retain) NSString *clientsResourcePath;
 @property (nonatomic, retain) NSString *assignmentClientExecutablePath;
 @property (nonatomic, retain) NSString *domainServerExecutablePath;
 @property (nonatomic, retain) NSString *requirementsURL;
